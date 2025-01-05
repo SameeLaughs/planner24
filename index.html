@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four-Year Planner</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; padding: 20px; }
+        .course-list { width: 250px; padding-right: 20px; }
+        #course-list { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; margin-bottom: 20px; }
+        #search { width: 100%; padding: 5px; margin-bottom: 10px; }
+        .planner { display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 10px; width: 100%; }
+        .year { display: grid; grid-template-rows: repeat(8, 1fr); border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; position: relative; }
+.course {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.course > .dropped-course {
+    margin: 2px;
+}
+
+
+        .course.dragging { opacity: 0.5; }
+        .course.invalid { background-color: yellow; }
+        .invalid-tooltip { font-size: 0.8em; color: red; }
+
+        /* Styling for dropped courses */
+        .dropped-course {
+            background-color: #99CC99;
+            border: 2px solid #66BB66;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 50px;
+            z-index: 2;
+        }
+
+        .course-details { padding: 10px; background-color: #f9f9f9; margin-top: 10px; border: 1px solid #ddd; }
+.course-details input, .course-details textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+        .requirements { padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; margin-left: 20px; }
+        .requirements h3 { margin-top: 0; }
+        .requirements ul { list-style-type: none; padding-left: 0; }
+        .requirements li { margin-bottom: 10px; }
+        .requirements input { margin-right: 5px; }
+
+        .requirement-status { display: inline-block; width: 20px; text-align: center; font-size: 18px; }
+    </style>
+</head>
+<body>
+<div class="course-list">
+    <input type="text" id="search" placeholder="Search for a course..." onkeyup="filterCourses()">
+    <ul id="course-list">
+        <!-- Course items r here -->
+    </ul>
+</div>
+
+
+<div class="planner">
+    <div class="year" id="freshman">
+        <h3>Freshman Year</h3>
+        <div class="course" id="course-1" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(1)">Course 1</div>
+        <div class="course" id="course-2" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(2)">Course 2</div>
+        <div class="course" id="course-3" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(3)">Course 3</div>
+        <div class="course" id="course-13" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(13)">Course 13</div>
+        <div class="course" id="course-14" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(14)">Course 14</div>
+        <div class="course" id="course-15" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(15)">Course 15</div>
+        <div class="course" id="course-16" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(16)">Course 16</div>
+
+        <div class="course" id="course-4" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(4)">Course 4</div>
+    </div>
+    <div class="year" id="sophomore">
+        <h3>Sophomore Year</h3>
+        <div class="course" id="course-5" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(5)">Course 5</div>
+        <div class="course" id="course-6" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(6)">Course 6</div>
+        <div class="course" id="course-7" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(7)">Course 7</div>
+        <div class="course" id="course-13" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(13)">Course 13</div>
+        <div class="course" id="course-14" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(14)">Course 14</div>
+        <div class="course" id="course-15" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(15)">Course 15</div>
+        <div class="course" id="course-16" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(16)">Course 16</div>
+
+        <div class="course" id="course-8" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(8)">Course 8</div>
+    </div>
+    <div class="year" id="junior">
+        <h3>Junior Year</h3>
+        <div class="course" id="course-9" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(9)">Course 9</div>
+        <div class="course" id="course-10" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(10)">Course 10</div>
+        <div class="course" id="course-11" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(11)">Course 11</div>
+        <div class="course" id="course-13" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(13)">Course 13</div>
+        <div class="course" id="course-14" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(14)">Course 14</div>
+        <div class="course" id="course-15" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(15)">Course 15</div>
+        <div class="course" id="course-16" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(16)">Course 16</div>
+
+        <div class="course" id="course-12" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(12)">Course 12</div>
+    </div>
+    <div class="year" id="senior">
+        <h3>Senior Year</h3>
+        <div class="course" id="course-13" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(13)">Course 13</div>
+        <div class="course" id="course-14" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(14)">Course 14</div>
+        <div class="course" id="course-15" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(15)">Course 15</div>
+        <div class="course" id="course-16" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(16)">Course 16</div>
+         <div class="course" id="course-13" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(13)">Course 13</div>
+        <div class="course" id="course-14" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(14)">Course 14</div>
+        <div class="course" id="course-15" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(15)">Course 15</div>
+        <div class="course" id="course-16" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="showCourseDetails(16)">Course 16</div>
+
+    </div>
+</div>
+<div class="course-details">
+    <h3>Course Details</h3>
+    <input type="text" id="course-name" placeholder="Course Name" readonly>
+    <textarea id="course-description" placeholder="Course Description" readonly></textarea>
+    <input type="text" id="course-credits" placeholder="Credits" readonly>
+    <input type="text" id="course-prerequisites" placeholder="Prerequisites" readonly>
+    <input type="text" id="course-duration" placeholder="Course Duration" readonly>
+</div>
+<div class="requirements">
+    <h3>Requirements</h3>
+    <p>except i can't get it to work LOL</p>
+    <ul>
+        <li>1 year of CS before Junior Year <span class="requirement-status" id="cs-status">❌</span></li>
+    </ul>
+</div>
+
+<script>
+const courses = [
+    { id: 1, name: 'AP English Literature', description: 'Advanced English course focusing on literature analysis.', credits: '4', prerequisites: 'None', duration: 'year long' },
+    { id: 2, name: 'AP English Language', description: 'Advanced English course focusing on writing and language analysis.', credits: '4', prerequisites: 'None', duration: 'semester' },
+    { id: 3, name: 'Foundations of CS', description: 'Introductory Computer Science course.', credits: '3', prerequisites: 'None', duration: 'semester' },
+    // Add more courses later
+];
+
+    const courseList = document.getElementById("course-list");
+    const searchField = document.getElementById("search");
+
+function displayCourses() {
+    courseList.innerHTML = '';
+    courses.forEach(course => {
+        const li = document.createElement('li');
+        li.textContent = course.name + (course.duration === 'semester' ? ' (Semester)' : ' (Year Long)');
+        li.id = 'course-' + course.id;
+        li.className = 'course';
+        li.setAttribute("draggable", true);
+        li.ondragstart = drag;
+        li.onclick = function() { showCourseDetails(course.id) };  // Show course details when clicked
+        courseList.appendChild(li);
+    });
+}
+
+
+function showCourseDetails(courseId) {
+    const course = courses.find(c => c.id === courseId);
+    if (course) {
+        document.getElementById("course-name").value = course.name;
+        document.getElementById("course-description").value = course.description;
+        document.getElementById("course-credits").value = course.credits;
+        document.getElementById("course-prerequisites").value = course.prerequisites;
+        document.getElementById("course-duration").value = course.duration; // Display the duration
+    }
+}
+
+function drag(event) {
+    event.dataTransfer.setData("text", event.target.id);
+}
+
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData("text");
+    const draggedElement = document.getElementById(data);
+    const target = event.target;
+    
+    const draggedCourseId = parseInt(draggedElement.id.split('-')[1]);
+    const draggedCourse = courses.find(course => course.id === draggedCourseId);
+    
+    if (draggedCourse.duration === 'year long') {
+        if (target.classList.contains("course") && !target.contains(draggedElement) && target.childElementCount === 0) {
+            target.appendChild(draggedElement);  
+            target.classList.add('dropped-course'); 
+            target.style.backgroundColor = "#99CC99"; 
+        }
+    } else if (draggedCourse.duration === 'semester') {
+        // If course is "semester", check if there is space for two
+        if (target.classList.contains("course") && target.childElementCount < 2) {
+            target.appendChild(draggedElement); 
+            target.classList.add('dropped-course');
+            target.style.backgroundColor = "#99CC99";  // lmao this is not wokring
+        }
+    }
+
+    updateRequirements(target.id);
+}
+
+
+
+    function updateRequirements(courseId) {
+        const course = courses.find(c => c.id === parseInt(courseId.split('-')[1]));
+        
+        if (course) {
+            if (course.name.includes('CS')) {
+                document.getElementById('cs-status').textContent = '✓';
+            }
+        }
+    }
+
+    function filterCourses() {
+        const searchValue = searchField.value.toLowerCase();
+        const courseItems = courseList.getElementsByTagName('li');
+        Array.from(courseItems).forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.indexOf(searchValue) === -1) {
+                item.style.display = 'none';
+            } else {
+                item.style.display = 'block';
+            }
+        });
+    }
+
+    window.onload = function() {
+        displayCourses();
+    };
+</script>
+
+</body>
+</html>
